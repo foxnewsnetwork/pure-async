@@ -1,0 +1,38 @@
+{
+  "name": "pure-async",
+  "version": "1.0.0",
+  "description": "async function runners and supervisors for elixir-erlang-inspired retry-based concurrency ",
+  "main": "dist/pure-async.js",
+  "scripts": {
+    "test": "jest",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/foxnewsnetwork/pure-async.git"
+  },
+  "keywords": [
+    "concurrency",
+    "supervisor",
+    "task",
+    "retry",
+    "erlang",
+    "elixir"
+  ],
+  "author": "Thomas Chen <foxnewsnetwork@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/foxnewsnetwork/pure-async/issues"
+  },
+  "homepage": "https://github.com/foxnewsnetwork/pure-async#readme",
+  "devDependencies": {
+    "@types/jest": "^21.1.6",
+    "jest": "^21.2.1",
+    "sinon": "^4.1.2",
+    "ts-jest": "^21.2.1",
+    "typescript": "^2.6.1"
+  },
+  "jest": {
+    "verbose": true
+  }
+}
