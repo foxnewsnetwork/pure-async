@@ -4,8 +4,10 @@
   "description": "async function runners and supervisors for elixir-erlang-inspired retry-based concurrency ",
   "main": "dist/pure-async.js",
   "scripts": {
-    "test": "jest",
-    "build": "tsc"
+    "test": "jest --no-cache",
+    "jver": "jest --version",
+    "build": "tsc",
+    "tslint": "tslint -c tslint.json -p tsconfig.json"
   },
   "repository": {
     "type": "git",
@@ -27,12 +29,46 @@
   "homepage": "https://github.com/foxnewsnetwork/pure-async#readme",
   "devDependencies": {
     "@types/jest": "^21.1.6",
+    "awesome-typescript-loader": "^3.3.0",
+    "babel-cli": "^6.26.0",
+    "babel-jest": "^21.2.0",
+    "babel-plugin-transform-regenerator": "^6.26.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
     "jest": "^21.2.1",
     "sinon": "^4.1.2",
-    "ts-jest": "^21.2.1",
+    "ts-jest": "^21.2.2",
+    "tslint": "^5.8.0",
     "typescript": "^2.6.1"
   },
   "jest": {
-    "verbose": true
+    "globals": {
+      "ts-jest": {
+        "useBabelrc": true,
+        "tsConfigFile": "tsconfig.json"
+      }
+    },
+    "verbose": true,
+    "moduleDirectories": [
+      "node_modules",
+      "<rootDir>/src",
+      "<rootDir>/test"
+    ],
+    "setupFiles": [
+      "<rootDir>/test/setup/babel-polyfill.js"
+    ],
+    "transform": {
+      "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
+      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testMatch": [
+      "**/test/**/*.test.(ts|js)"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "json"
+    ]
   }
 }
