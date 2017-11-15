@@ -2,6 +2,14 @@
 
 WIP library for handling erlang-elixir like supervisors and retrying async functions
 
+**TODOs**
+- [ ] setup rollup to build file
+- [ ] setup travis
+- [ ] publish to npm
+- [ ] fix readme so it's accurate
+- [ ] setup a docs page
+- [ ] write tests for using supervisor trees with `runAsync`
+
 ## The Problem
 
 Q: How do you handle errors in `async` functions?
