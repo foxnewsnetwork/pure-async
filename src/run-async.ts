@@ -19,8 +19,8 @@ import errorCode from './error-code';
 export async function _runAsync<T>(
   asyncFn: AsyncFn<T>,
   args: Array<any>,
-  failStateFn: FailStateFn<T>,
-  successStateFn: SuccessStateFn<T>
+  failStateFn: FailStateFn<T> = defaultRunSpecFailFn,
+  successStateFn: SuccessStateFn<T> = defaultRunSpecSuccessFn
 ): Promise<RunAttempt<T>> {
   const runResults: Array<RunAttempt<T>> = [];
 

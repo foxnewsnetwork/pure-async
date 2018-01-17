@@ -52,7 +52,7 @@ Notice that our previous `try`-`catch` loop, which we originally intended to res
 This is clearly a massive problem and makes `async` functions dangerous to use in IO
 
 ### The Erlang Solution
-Ideally, we'd like javascript to just have better error handling like any non-joke language, but this is javascript, so a better system of try-catch probably won't come until at least es2020.
+Ideally, we'd like javascript to just have better error handling like any non-joke language, but this is javascript, so a better system of try-catch probably won't come until the cows come home
 
 Ideally, something like the following would be great:
 
@@ -74,16 +74,73 @@ try {
 One of these days, I'll probably write up a proposal for the above, but for now, we can achieve a similar effect using the `runAsync` imported from this library
 
 ```javascript
-import runAsync from 'run-async';
+import { runAsync } from 'pure-async';
 
-const { code, error, result } = await runAsync(foo, [], {
-  maxAttemps: 10,
-  timeoutAfter: 600
-})
-
-if (code === 'ok') {
-  ...
-} else if (code === 'error') {
-  ...
+async () => {
+  const { code, error, result } = await runAsync(foo, [], {
+    maxAttempts: 10,
+    timeoutAfter: 600
+  })
+  
+  if (code === 'ok') {
+    ...
+  } else if (code === 'error') {
+    ...
+  }
 }
 ```
+
+## Async Groups
+
+Also known as task groups, the async group is a bunch of `runAsync`s that are linked together. Consider the following example:
+
+```javascript
+async function morningRoutine() {
+  await runAsync(getUp, []);
+  await runAsync(getDressed, []);
+  await runAsync(brushTeeth, []);
+}
+
+const getUp = async () => fetch('get-up');
+async function getDressed() {
+  if (Math.random() > 0.5) {
+    throw new Error('no clothes');
+  } else {
+    return fetch('get-dressed');
+  }
+}
+```
+
+In Erlang / Elixir, [3 strategies](https://hexdocs.pm/elixir/master/Supervisor.html#module-strategies) are supproted for how a group of `async` functions should be run:
+
+- `one-for-one` : whatever fails should get re-tried
+- `one-for-all` : if any fail, everything gets re-tried
+- `rest-for-one` : if something fails, that thing and the rest gets re-tried
+
+In the context of `async` functions, only `one-for-all` and `rest-for-one` strategies make sense. The correspond to the following examples:
+
+- `one-for-all`: if our `getDressed` function fails, we start all over from the top and try again
+- `rest-for-one`: if `getDressed` fails, we retry `getDressed` until it succeeds before moving on
+
+We can implement both strategies with an async generator:
+
+```javascript
+import { strategies: { oneForOne, oneForAll, restForOne }, runAsync } from 'pure-async';
+async function * morningRoute() {
+  yield await runAsync(getUp, [])
+  yield await runAsync(getDressed, [])
+  yield await runAsync(brushTeeth, [])
+}
+
+const brushTeeth = async () => {
+  if (Math.rand() > 0.7) {
+    throw new Error('gingivitis');
+  } else {
+    return 'ok';
+  }
+}
+
+runAsync(morningRoute, [], { strategy: restForOne })
+```
+
+A strategy is a transform that wraps the promise from `runAsync` which
